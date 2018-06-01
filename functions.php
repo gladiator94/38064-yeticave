@@ -1,9 +1,12 @@
 <?php
 /**
+ * Формирует количество дней, часов, минут и секунд
+ * до завершения аукциона лота, и
+ * форматирует время полученное из подготовленной строки
+ * в формат "%количество% дней H:i:s"
  * @param string $end_date дата окончания лота
- * @author Nikolay Dumchev
- * @copyright 2018 Wikipedia
- * @return string $date отформатированная строка указывающая количество дней, часов и минут
+ *
+ * @return string $date отформатированная строка в формате %количество% дней H:i:s
  */
 function timeLot(string $end_date)
 {
@@ -29,7 +32,10 @@ function timeLot(string $end_date)
 }
 
 /**
- * 
+ * Проверяют осталось ли меньше часа до окончания времени лота
+ * @param string $end_date дата окончания лота
+ *
+ * @return bool $check false, если больше часа, true если меньше
  */
 function timeFinishing(string $end_date)
 {
@@ -44,29 +50,16 @@ function timeFinishing(string $end_date)
 }
 
 /**
- * @param string $price цена
- * @author Nikolay Dumchev
- * @copyright 2018 Wikipedia
- * @return string $price_formatted отформатированная строка с ценой и знаком рубля
+ * Форматирует строку с ценой добавляя пробелы
+ * через каждые 3 цифры
+ * @param string $price строка с ценой
+ *
+ * @return string $price_formatted отформатированная строка с ценой
  */
-function format_price($price)
-{
-  $price = htmlspecialchars($price);
-  $price_formatted = ceil($price);
-
-  if ($price_formatted > 999) {
-    $price_formatted = number_format($price_formatted, 0, '', ' ');
-  }
-
-  $price_formatted = $price_formatted . ' <b class="rub">р</b>';
-
-  return $price_formatted;
-}
-
 function formatPrice(string $price)
 {
 	$price = htmlspecialchars($price);
-	$price_formatted = ceil($price);
+	$price_formatted = ceil((int) $price);
 
   if ($price_formatted > 999) {
   	$price_formatted = number_format($price_formatted, 0, '', ' ');
@@ -76,50 +69,33 @@ function formatPrice(string $price)
 }
 
 /**
- * @param float $price цена лота
- * @author Nikolay Dumchev
- * @copyright 2018 Wikipedia
- * @return string $price_formatted отформатированная строка с ценой и БЕЗ знака рубля
+ * Подсчитывает минимальную ставку, которую может сделать пользователь
+ * @param string $bids_count строка с количеством ставок
+ * @param string $price строка с ценой
+ * @param string $bet_step строка шагом ставки
+ *
+ * @return string $min_price строка с минимальной ставкой
  */
-function format_price__without_r($price)
-{
-  $price = htmlspecialchars($price);
-  $price_formatted = ceil($price);
-
-  if ($price_formatted > 999) {
-    $price_formatted = number_format($price_formatted, 0, '', ' ');
-  }
-
-  return $price_formatted;
-}
-
-/**
- * @param int $bids_count количество ставок
- * @param float $price цена лота
- * @param float $bet_step минимальный шаг ставки
- * @author Nikolay Dumchev
- * @copyright 2018 Wikipedia
- * @return float $min_price минимальная ставка которую можно сделать
- */
-function min_bet($bids_count, $price, $bet_step)
+function minBet($bids_count, $price, $bet_step)
 {
 	$price = htmlspecialchars($price);
 	$min_price = $price;
 
 	if ($bids_count > 0) {
 		$bet_step = htmlspecialchars($bet_step);
-		$min_price = ceil($price) + ceil($bet_step);
+		$min_price = ceil($price) + ceil((int) $bet_step);
 	}
 
-	return $min_price;
+	return (string) $min_price;
 }
 
 /**
- * @param string $templatePath путь к сценарию шаблона
- * @param array $templateData данные необходимые для рендеринга шаблона
- * @author Nikolay Dumchev
- * @copyright 2018 Wikipedia
- * @return string $content html-код шаблона
+ * Функция получает код из указаного файла (шаблона)
+ * и передает в переменную
+ * @param string $templatePath путь к подключаемому файлу
+ * @param array $templateData массив с данным необходимыми для рендеринга шаблона
+ *
+ * @return string $content контент полученный из подключенного файла
  */
 function renderTemplate(string $templatePath, array $templateData = [])
 {
@@ -137,13 +113,15 @@ function renderTemplate(string $templatePath, array $templateData = [])
 }
 
 /**
+ * Функция формирует массив с названием класса,
+ * html-кодом для вывода ошибки и значением
+ * для элементов форм
  * @param string $error текст ошибки
- * @param string $error значение поля, если есть
- * @author Nikolay Dumchev
- * @copyright 2018 Wikipedia
- * @return array $format массив содержащий в себе название класса (для отрисовки ошибки для поля формы), текст ошибки, значение поля, которое было передано через POST
+ * @param string $value значение поля формы
+ *
+ * @return array $format массив с данным для подстановки в шаблон элемента формы
  */
-function formatFormItem($error, $value = null)
+function formatFormItem($error, $value = '')
 {
 	$value = htmlspecialchars($value);
 
@@ -165,7 +143,13 @@ function formatFormItem($error, $value = null)
 	return $format;
 }
 
-
+/**
+ * Склоняет слово 'ставка' в родительный падеж и необходимое
+ * число в зависимости от количества ставок
+ * @param int $bids_count количество ставок
+ *
+ * @return string $word слово 'ставки' в нужном склонении
+ */
 function formatWordBids(int $bids_count)
 {
 	$word = 'ставок';
@@ -186,6 +170,13 @@ function formatWordBids(int $bids_count)
 	return $word;
 }
 
+/**
+ * Склоняет слово 'день' в родительный падеж и необходимое
+ * число в зависимости от количества дней
+ * @param int $days_count количество дней
+ *
+ * @return string $word слово 'день' в нужном склонении
+ */
 function formatWordDays(int $days_count)
 {
 	$word = 'дней';
@@ -206,6 +197,13 @@ function formatWordDays(int $days_count)
 	return $word;
 }
 
+/**
+ * Получает из указанной в $db_conf БД из таблицы `categories`
+ * массив со списком id и названиями категорий
+ * @param object $db_conf объект функции  mysqli_connect
+ *
+ * @return array $categories массив со списком категорий или массив ошибкой в случае ошибки в исполнении запроса
+ */
 function getCategories(object $db_conf)
 {
 	$sql = "SELECT `categories`.`id`, `categories`.`name` "

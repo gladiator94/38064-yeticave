@@ -58,3 +58,6 @@ CREATE UNIQUE INDEX category_name ON `categories`(`name`);
 
 CREATE INDEX lots_category ON `lots`(`category`);
 CREATE INDEX bids_user ON `bids`(`user`);
+
+CREATE FULLTEXT INDEX `lot_ft_search`
+ON `lots`(`name`, `description`);

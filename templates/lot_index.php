@@ -17,10 +17,10 @@
         <div class="lot-item__cost-state">
           <div class="lot-item__rate">
             <span class="lot-item__amount">Текущая цена</span>
-            <span class="lot-item__cost"><?= format_price($lot['price']); ?></span>
+            <span class="lot-item__cost"><?= formatPrice($lot['price']); ?> <b class="rub">р</b></span>
           </div>
           <div class="lot-item__min-cost">
-            Мин. ставка <span><?= format_price(min_bet($bids_count, $lot['price'], $lot['bet_step'])); ?></span>
+            Мин. ставка <span><?= formatPrice(minBet($bids_count, $lot['price'], $lot['bet_step'])); ?> <b class="rub">р</b></span>
           </div>
         </div>
         <?php if ($is_auth && !$lot_expired && !$is_author): ?>
@@ -28,7 +28,7 @@
           <?php $form_item = formatFormItem($errors['bet']); ?>
           <p class="lot-item__form-item<?= $form_item['classname']; ?>">
             <label for="cost">Ваша ставка</label>
-            <input id="cost" type="number" name="cost" placeholder="<?= format_price__without_r(min_bet($bids_count, $lot['price'], $lot['bet_step'])); ?>" value="<?= $form_item['value']; ?>">
+            <input id="cost" type="number" name="cost" placeholder="<?= formatPrice(minBet($bids_count, $lot['price'], $lot['bet_step'])); ?>" value="<?= $form_item['value']; ?>">
             <?= $form_item['error']; ?>
           </p>
           <button type="submit" class="button">Сделать ставку</button>
@@ -41,7 +41,7 @@
         <?php foreach ($bids as $key => $bet): ?>
           <tr class="history__item">
             <td class="history__name"><?= $bet['name']; ?></td>
-            <td class="history__price"><?= format_price__without_r($bet['amount']); ?> р</td>
+            <td class="history__price"><?= formatPrice($bet['amount']); ?> р</td>
             <td class="history__time"><?= $bet['date']; ?></td>
           </tr>
         <?php endforeach; ?>

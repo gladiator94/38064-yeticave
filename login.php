@@ -65,7 +65,7 @@ if (isset($_SESSION['user'])) {
 }
 
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $login = $_POST['login'];
 
   $required = ['email', 'password'];

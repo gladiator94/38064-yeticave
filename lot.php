@@ -66,7 +66,7 @@ if (!isset($_GET['id'])) {
 
 $lot_id = intval($_GET['id']);
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   if (!$is_auth) {
     $errors_post['bet'] = 'Авторизуйтесь, чтобы делать ставки';
@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           $min_bet = ($bids_count > 0) ? (intval($lot_bet['price']) + intval($lot_bet['bet_step'])) : intval($lot_bet['price']);
 
           if ($bet < $min_bet) {
-            $errors_post['bet'] = 'Минимально возможная ставка: ' . format_price__without_r($min_bet);
+            $errors_post['bet'] = 'Минимально возможная ставка: ' . formatPrice($min_bet);
           }
         }
       }

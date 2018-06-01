@@ -44,7 +44,7 @@ mysqli_set_charset($db_conf, 'utf8');
 $categories = getCategories($db_conf);
 
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $user = $_POST['user'];
 
   $required = ['email', 'password', 'name', 'message'];
@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $file_type = mime_content_type($tmp_name);
 
-    if (!($file_type == 'image/jpeg' || $file_type == 'image/png')) {
+    if (!($file_type === 'image/jpeg' || $file_type === 'image/png')) {
       $errors_post['picture'] = 'Загрузите изображение в формате jpg/jpeg или png';
     }
   }
