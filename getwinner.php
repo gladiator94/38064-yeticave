@@ -33,7 +33,7 @@ foreach ($lots as $key => $lot) {
 			. "SET `lots`.`winner` = '$winner' "
 			. "WHERE `lots`.`id` = '$lot_id';";
 
-	//$result = mysqli_query($db_conf, $sql);
+	$result = mysqli_query($db_conf, $sql);
 
 	if (!$result) {
 		$errors['sendmail_sqlset_lot_winner'] = mysqli_error($db_conf);
@@ -51,25 +51,32 @@ foreach ($lots as $key => $lot) {
 	}
 
 	$winner_data = mysqli_fetch_assoc($result);
-	$winner_email = $winner_data['email'];
-	$winner_name = $winner_data['name'];
 
-	$message = new Swift_Message('Ваша ставка победила');
-	$message->setFrom([$site_email => 'YetiCave']);
-	$message->setTo([$winner_email => $winner_name]);
-	$message->setContentType('text/html');
 
-	$meesage_body = renderTemplate('templates/email.php', [
-		'user_name' => $winner_data['email'],
-		'lot_id' => $lot_id
+	$sql = "SELECT `lots`.`name` FROM `lots` "
+			. "WHERE `lots`.`id` = '$lot_id';";
 
-	]);
+	$result = mysqli_query($db_conf, $sql);
+	$lot_name = mysqli_fetch_assoc($result)['name'];
 
-	$message->setBody($meesage_body);
 
-	try {
+	if (is_array($winner_data) and !empty($winner_data)) {
+		$winner_email = $winner_data['email'];
+		$winner_name = $winner_data['name'];
+
+		$message = new Swift_Message('Ваша ставка победила');
+		$message->setFrom([$site_email => 'YetiCave']);
+		$message->setTo([$winner_email => $winner_name]);
+		$message->setContentType('text/html');
+
+		$meesage_body = renderTemplate('templates/email.php', [
+			'user_name' => $winner_data['name'],
+			'lot_id' => $lot_id,
+			'lot_name' => $lot_name
+		]);
+
+		$message->setBody($meesage_body);
+
 		$mailer->send($message);
-	} catch (\Swift_TransportException $e) {
-		$errors['swiftmailer_send'] = $e->getMessage();
 	}
 }

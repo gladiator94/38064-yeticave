@@ -26,7 +26,7 @@
         <img src="<?= $user_avatar; ?>" width="40" height="40" alt="Пользователь">
       </div>
       <div class="user-menu__logged">
-        <p><?= htmlspecialchars($user_name); ?></p>
+        <p><a href="my-lots.php"><b><?= htmlspecialchars($user_name); ?></b></a></p>
         <p><a href="logout.php">Выход</a></p>
       </div>
     <?php else: ?>
