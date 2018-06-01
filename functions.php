@@ -28,10 +28,19 @@ function timeLot(string $end_date)
 	return $date;
 }
 
-function timeFinishing() {
+/**
+ * 
+ */
+function timeFinishing(string $end_date)
+{
+	$check = false;
+
+	$time_lot = strtotime($end_date) - time();
+	if ($time_lot < 3600) {
+		$check = true;
+	}
 	
-	
-	return;
+	return $check;
 }
 
 /**
@@ -54,7 +63,7 @@ function format_price($price)
   return $price_formatted;
 }
 
-function formatPrice (string $price)
+function formatPrice(string $price)
 {
 	$price = htmlspecialchars($price);
 	$price_formatted = ceil($price);
@@ -134,7 +143,7 @@ function renderTemplate(string $templatePath, array $templateData = [])
  * @copyright 2018 Wikipedia
  * @return array $format массив содержащий в себе название класса (для отрисовки ошибки для поля формы), текст ошибки, значение поля, которое было передано через POST
  */
-function formatFormItem ($error, $value = null)
+function formatFormItem($error, $value = null)
 {
 	$value = htmlspecialchars($value);
 
@@ -157,7 +166,7 @@ function formatFormItem ($error, $value = null)
 }
 
 
-function formatWordBids (int $bids_count)
+function formatWordBids(int $bids_count)
 {
 	$word = 'ставок';
 
@@ -177,7 +186,7 @@ function formatWordBids (int $bids_count)
 	return $word;
 }
 
-function formatWordDays (int $days_count)
+function formatWordDays(int $days_count)
 {
 	$word = 'дней';
 
@@ -195,4 +204,22 @@ function formatWordDays (int $days_count)
 	}
 
 	return $word;
+}
+
+function getCategories(object $db_conf)
+{
+	$sql = "SELECT `categories`.`id`, `categories`.`name` "
+    . "FROM `categories` "
+    . "ORDER BY `categories`.`id` ASC";
+
+  $result = mysqli_query($db_conf, $sql);
+
+  if (!$result) {
+  	$error = mysqli_error($db_conf);
+  	$categories['errors']['name'] = '<p>Ошибка MySQL: ' . $error . '</p>';
+	} else {
+  	$categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
+	}
+
+  return $categories;
 }

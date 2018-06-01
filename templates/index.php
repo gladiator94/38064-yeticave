@@ -2,24 +2,44 @@
   <h2 class="promo__title">Нужен стафф для катки?</h2>
   <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и горнолыжное снаряжение.</p>
   <ul class="promo__list">
-    <li class="promo__item promo__item--boards">
-      <a class="promo__link" href="all-lots.html">Доски и лыжи</a>
+    <?php foreach ($categories as $key => $category): ?>
+      <li class="promo__item<?php
+        switch ($category['name']) {
+          case 'Доски и лыжи':
+            ?> promo__item--boards<?php
+            break;
+
+          case 'Доски и лыжи':
+            ?> promo__item--attachment<?php
+            break;
+
+          case 'Крепления':
+            ?> promo__item--boots<?php
+            break;
+
+          case 'Ботинки':
+            ?> promo__item--boards<?php
+            break;
+
+          case 'Одежда':
+            ?> promo__item--clothing<?php
+            break;
+
+          case 'Инструменты':
+            ?> promo__item--tools<?php
+            break;
+
+          case 'Разное':
+            ?> promo__item--other<?php
+            break;
+
+          default:
+            break;
+        }
+      ?>">
+      <a class="promo__link" href="category.php?category=<?= $category['id']; ?>"><?= $category['name']; ?></a>
     </li>
-    <li class="promo__item promo__item--attachment">
-      <a class="promo__link" href="all-lots.html">Крепления</a>
-    </li>
-    <li class="promo__item promo__item--boots">
-      <a class="promo__link" href="all-lots.html">Ботинки</a>
-    </li>
-    <li class="promo__item promo__item--clothing">
-      <a class="promo__link" href="all-lots.html">Одежда</a>
-    </li>
-    <li class="promo__item promo__item--tools">
-      <a class="promo__link" href="all-lots.html">Инструменты</a>
-    </li>
-    <li class="promo__item promo__item--other">
-      <a class="promo__link" href="all-lots.html">Разное</a>
-    </li>
+    <?php endforeach; ?>
   </ul>
 </section>
 <section class="lots">

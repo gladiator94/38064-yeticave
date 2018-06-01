@@ -41,18 +41,7 @@ if (!$db_conf) {
 
 mysqli_set_charset($db_conf, 'utf8');
 
-$sql = 'SELECT `categories`.`name` '
-    . 'FROM `categories` '
-    . 'ORDER BY `categories`.`id` ASC;';
-
-$result = mysqli_query($db_conf, $sql);
-
-if (!$result) {
-  $error = mysqli_error($db_conf);
-  $categories['errors']['name'] = '<p>Ошибка MySQL: ' . $error . '</p>';
-} else {
-  $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
-}
+$categories = getCategories($db_conf);
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
